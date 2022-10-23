@@ -1,5 +1,9 @@
 export default class YandexMusicService {
-  async addTrackToPlaylist(trackId: string, albumId: string, revision: number) {
+  public async addTrackToPlaylist(
+    trackId: string,
+    albumId: string,
+    revision: number
+  ) {
     try {
       await fetch('https://music.yandex.ru/handlers/playlist-patch.jsx', {
         method: 'post',
@@ -16,7 +20,7 @@ export default class YandexMusicService {
     }
   }
 
-  async getPlaylistRevision() {
+  private async getPlaylistRevision() {
     try {
       const data = await fetch(
         'https://music.yandex.ru/handlers/playlist.jsx?owner=nordicore&kinds=1030&light=true&madeFor=&withLikesCount=true&forceLogin=true&lang=ru&external-domain=music.yandex.ru&overembed=false&ncrnd=0.8524821500292261',
@@ -49,7 +53,7 @@ export default class YandexMusicService {
     };
   }
 
-  recognizeUrl(url: string) {
+  public recognizeUrl(url: string) {
     return !!url.match(
       new RegExp('https://music.yandex.ru/album/(\\d+)/track/(\\d+)')
     );

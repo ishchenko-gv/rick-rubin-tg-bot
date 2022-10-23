@@ -22,12 +22,18 @@ export default class ChatService {
 
   public async handleMessage(message: ChatMessage, reply: Reply) {
     if (
-      this.checkIfReactToMusic(message.replyToMessage.text) &&
+      // this.checkIfReactToMusic(message.replyToMessage.text) &&
       this.getReaction(message.text) === Reaction.Wondering
     ) {
-      await this.musicService.addToPlaylist(message.replyToMessage.text);
+      try {
+        await this.musicService.addToPlaylist(message.replyToMessage.text);
 
-      reply('👍');
+        reply('👍');
+      } catch (err) {
+        console.error(err);
+
+        reply('не смог добавить, что-то поломалось 😬');
+      }
     }
   }
 

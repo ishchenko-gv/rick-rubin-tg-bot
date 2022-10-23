@@ -3,18 +3,18 @@ import { Telegraf } from 'telegraf';
 import { Message } from 'typegram';
 import ChatService, { ChatMessage } from './services/chat';
 import MusicService from './services/music';
+import YandexMusicService from './services/yandex';
 
 dotenv.config();
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const musicService = new MusicService();
+const yandexMusic = new YandexMusicService();
+const musicService = new MusicService(yandexMusic);
 const chatService = new ChatService(musicService);
 
 bot.on('text', async (ctx) => {
-  const { message, reply } = ctx;
-
-  const { text, reply_to_message } = message;
+  const { text, reply_to_message } = ctx.message;
 
   const chatMessage: ChatMessage = {
     text,
@@ -23,7 +23,7 @@ bot.on('text', async (ctx) => {
     }
   };
 
-  chatService.handleMessage(chatMessage, reply);
+  chatService.handleMessage(chatMessage, (message) => ctx.reply(message));
 });
 
 bot.launch();
