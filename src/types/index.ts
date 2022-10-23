@@ -8,3 +8,7 @@ declare global {
     }
   }
 }
+
+export interface MusicStrategy {
+  addTrackToPlaylist(url: string): void;
+}

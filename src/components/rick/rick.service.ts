@@ -1,6 +1,7 @@
-import MusicService from '../music';
+import { Service } from 'typedi';
+import MusicService from '../music/music.service';
 
-export type ChatMessage = {
+export type RickMessage = {
   text: string;
   replyToMessage: {
     text: string;
@@ -13,14 +14,19 @@ enum Reaction {
   Wondering
 }
 
-export default class ChatService {
+@Service()
+export class RickService {
   musicService: MusicService;
 
   constructor(musicService: MusicService) {
     this.musicService = musicService;
   }
 
-  public async handleMessage(message: ChatMessage, reply: Reply) {
+  public async readMessage(message: RickMessage, reply: Reply) {
+    await this.handleReactionToMusic(message, reply);
+  }
+
+  private async handleReactionToMusic(message: RickMessage, reply: Reply) {
     if (
       // this.checkIfReactToMusic(message.replyToMessage.text) &&
       this.getReaction(message.text) === Reaction.Wondering
@@ -28,7 +34,7 @@ export default class ChatService {
       try {
         await this.musicService.addToPlaylist(message.replyToMessage.text);
 
-        reply('👍');
+        reply('добавил 👍');
       } catch (err) {
         console.error(err);
 
@@ -38,12 +44,12 @@ export default class ChatService {
   }
 
   private getReaction(messageText: string): Reaction | null {
-    if (messageText.match(/ууу+/)) return Reaction.Wondering;
+    if (messageText.match(new RegExp('ууу+', 'i'))) return Reaction.Wondering;
 
     return null;
   }
 
   private checkIfReactToMusic(replyToMessageText: string) {
-    return this.musicService.recognizeUrl(replyToMessageText);
+    // return this.musicService.recognizeUrl(replyToMessageText);
   }
 }

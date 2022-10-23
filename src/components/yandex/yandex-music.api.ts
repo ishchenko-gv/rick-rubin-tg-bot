@@ -1,4 +1,7 @@
-export default class YandexMusicService {
+import { Service } from 'typedi';
+
+@Service()
+export class YandexMusicApi {
   public async addTrackToPlaylist(
     trackId: string,
     albumId: string,
@@ -20,7 +23,7 @@ export default class YandexMusicService {
     }
   }
 
-  private async getPlaylistRevision() {
+  public async getPlaylistRevision() {
     try {
       const data = await fetch(
         'https://music.yandex.ru/handlers/playlist.jsx?owner=nordicore&kinds=1030&light=true&madeFor=&withLikesCount=true&forceLogin=true&lang=ru&external-domain=music.yandex.ru&overembed=false&ncrnd=0.8524821500292261',
@@ -43,7 +46,7 @@ export default class YandexMusicService {
     }
   }
 
-  parseTrackDataFromUrl(url: string) {
+  public parseTrackDataFromUrl(url: string) {
     const [, albumId] = url.match(/album\/(\d+)/) || [];
     const [, trackId] = url.match(/track\/(\d+)/) || [];
 
