@@ -1,6 +1,6 @@
 import { Telegraf } from 'telegraf';
 import { Message } from 'typegram';
-import { RickService, RickMessage } from '../rick/rick.service';
+import { RickService, ChatMessage } from '../rick/rick.service';
 
 export class Telegram {
   private rickService;
@@ -15,7 +15,7 @@ export class Telegram {
     bot.on('text', async (ctx) => {
       const { text, reply_to_message } = ctx.message;
 
-      const chatMessage: RickMessage = {
+      const chatMessage: ChatMessage = {
         text,
         replyToMessage: {
           text: ((reply_to_message || { text: '' }) as Message.TextMessage).text
