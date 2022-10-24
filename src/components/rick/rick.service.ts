@@ -1,8 +1,7 @@
 import { Service } from 'typedi';
-import { MusicData, MusicStrategy } from '../../types';
 import MusicService from '../music/music.service';
 
-export type RickMessage = {
+export type ChatMessage = {
   text: string;
   replyToMessage: {
     text: string;
@@ -17,20 +16,24 @@ enum Reaction {
 
 @Service()
 export class RickService {
-  musicService: MusicService;
+  private musicService: MusicService;
 
   constructor(musicService: MusicService) {
     this.musicService = musicService;
   }
 
-  public async readMessage(message: RickMessage, reply: Reply) {
-    const musicData = this.musicService.parseDataFromUrl(
+  public async readMessage(message: ChatMessage, reply: Reply) {
+    const [musicStrategy, trackData] = this.musicService.parseDataFromUrl(
       message.replyToMessage.text
     );
 
-    if (musicData && this.getReaction(message.text) === Reaction.Wondering) {
+    if (
+      musicStrategy &&
+      trackData &&
+      this.getReaction(message.text) === Reaction.Wondering
+    ) {
       try {
-        await this.musicService.addToPlaylist(musicData);
+        await this.musicService.addToPlaylist(musicStrategy, trackData);
 
         reply('добавил 👍');
       } catch (err) {
