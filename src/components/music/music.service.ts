@@ -1,9 +1,6 @@
 import { Service } from 'typedi';
+import { Track, MusicStrategy } from '../../types';
 import { YandexMusicStrategy } from '../yandex/yandex-music.strategy';
-
-enum MusicServices {
-  Yandex
-}
 
 @Service()
 export default class MusicService {
@@ -13,19 +10,23 @@ export default class MusicService {
     this.yandexMusicStrategy = yandexMusicStrategy;
   }
 
-  public async addToPlaylist(url: string) {
-    let strategy;
+  public async addToPlaylist(musicData: Track & { strategy: MusicStrategy }) {
+    const { strategy, albumId, trackId } = musicData;
 
-    if (this.getStrategyByUrl(url)) {
-      strategy = this.yandexMusicStrategy;
-    }
-
-    if (!strategy) return;
-
-    strategy.addTrackToPlaylist(url);
+    strategy.addTrackToPlaylist({ albumId, trackId });
   }
 
-  getStrategyByUrl(url: string) {
-    return false;
+  public parseDataFromUrl(
+    url: string
+  ): (Track & { strategy: MusicStrategy }) | null {
+    let data = this.yandexMusicStrategy.parseTrackDataFromUrl(url);
+
+    if (data)
+      return {
+        ...data,
+        strategy: this.yandexMusicStrategy
+      };
+
+    return null;
   }
 }

@@ -9,6 +9,11 @@ declare global {
   }
 }
 
+export type Track = {
+  trackId: string;
+  albumId: string;
+};
+
 export interface MusicStrategy {
-  addTrackToPlaylist(url: string): void;
+  addTrackToPlaylist(track: Track): void;
 }

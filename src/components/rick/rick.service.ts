@@ -1,4 +1,5 @@
 import { Service } from 'typedi';
+import { MusicData, MusicStrategy } from '../../types';
 import MusicService from '../music/music.service';
 
 export type RickMessage = {
@@ -23,16 +24,13 @@ export class RickService {
   }
 
   public async readMessage(message: RickMessage, reply: Reply) {
-    await this.handleReactionToMusic(message, reply);
-  }
+    const musicData = this.musicService.parseDataFromUrl(
+      message.replyToMessage.text
+    );
 
-  private async handleReactionToMusic(message: RickMessage, reply: Reply) {
-    if (
-      // this.checkIfReactToMusic(message.replyToMessage.text) &&
-      this.getReaction(message.text) === Reaction.Wondering
-    ) {
+    if (musicData && this.getReaction(message.text) === Reaction.Wondering) {
       try {
-        await this.musicService.addToPlaylist(message.replyToMessage.text);
+        await this.musicService.addToPlaylist(musicData);
 
         reply('добавил 👍');
       } catch (err) {
@@ -40,6 +38,8 @@ export class RickService {
 
         reply('не смог добавить, что-то поломалось 😬');
       }
+
+      return;
     }
   }
 
@@ -47,9 +47,5 @@ export class RickService {
     if (messageText.match(new RegExp('ууу+', 'i'))) return Reaction.Wondering;
 
     return null;
-  }
-
-  private checkIfReactToMusic(replyToMessageText: string) {
-    // return this.musicService.recognizeUrl(replyToMessageText);
   }
 }
