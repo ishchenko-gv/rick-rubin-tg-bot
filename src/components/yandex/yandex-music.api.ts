@@ -35,30 +35,10 @@ export class YandexMusicApi {
         }
       );
 
-      const {
-        playlist: { revision }
-      } = await data.json();
-
-      return revision;
+      return (await data.json()).playlist.revision;
     } catch (err) {
       console.error(err);
       return null;
     }
-  }
-
-  public parseTrackDataFromUrl(url: string) {
-    const [, albumId] = url.match(/album\/(\d+)/) || [];
-    const [, trackId] = url.match(/track\/(\d+)/) || [];
-
-    return {
-      albumId,
-      trackId
-    };
-  }
-
-  public recognizeUrl(url: string) {
-    return !!url.match(
-      new RegExp('https://music.yandex.ru/album/(\\d+)/track/(\\d+)')
-    );
   }
 }

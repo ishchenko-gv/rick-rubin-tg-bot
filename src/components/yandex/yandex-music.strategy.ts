@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { Track, MusicStrategy } from '../../types';
+import { TrackData, MusicStrategy } from '../../types';
 import { YandexMusicApi } from './yandex-music.api';
 
 @Service()
@@ -10,8 +10,8 @@ export class YandexMusicStrategy implements MusicStrategy {
     this.yandexMusicApi = yandexMusicApi;
   }
 
-  public async addTrackToPlaylist(track: Track) {
-    const { trackId, albumId } = track;
+  public async addTrackToPlaylist(trackData: TrackData) {
+    const { trackId, albumId } = trackData;
 
     const playlistRevision = await this.yandexMusicApi.getPlaylistRevision();
 
@@ -22,7 +22,7 @@ export class YandexMusicStrategy implements MusicStrategy {
     );
   }
 
-  public parseTrackDataFromUrl(url: string) {
+  public parseTrackDataFromUrl(url: string): TrackData | null {
     const match = url.match(
       new RegExp('https://music.yandex.ru/album/(\\d+)/track/(\\d+)')
     );
