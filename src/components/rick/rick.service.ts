@@ -23,6 +23,10 @@ export class RickService {
   }
 
   public async readMessage(message: ChatMessage, reply: Reply) {
+    this.handleReactionToMusicMessage(message, reply);
+  }
+
+  async handleReactionToMusicMessage(message: ChatMessage, reply: Reply) {
     const [musicStrategy, trackData] = this.musicService.parseDataFromUrl(
       message.replyToMessage.text
     );
@@ -41,8 +45,6 @@ export class RickService {
 
         reply('не смог добавить, что-то поломалось 😬');
       }
-
-      return;
     }
   }
 
